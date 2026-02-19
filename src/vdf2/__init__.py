@@ -1,18 +1,14 @@
 import re
 
-def parse(text):
+def _parse(text):
     stack = [{}]
     key = None
 
-    lines = text.splitlines()
+    lines = [line.split('//', 1)[0].strip() for line in text.splitlines() if line.strip()]
 
-    token_re = re.compile(r'"([^"]+)"|(\{)|(\})')
+    token_re = re.compile(r'"((?:\\.|[^"\\])*)"|(\{)|(\})')
 
     for line in lines:
-        line = line.split('//', 1)[0].strip()
-        if not line:
-            continue
-
         pos = 0
         while pos < len(line):
             match = token_re.search(line, pos)
@@ -21,10 +17,11 @@ def parse(text):
             pos = match.end()
 
             if match.group(1):
+                value = match.group(1).replace(r'\"', '"')
                 if key is None:
-                    key = match.group(1)
+                    key = value
                 else:
-                    stack[-1][key] = match.group(1)
+                    stack[-1][key] = value
                     key = None
             elif match.group(2):
                 new_dict = {}
@@ -34,5 +31,4 @@ def parse(text):
                 stack.append(new_dict)
             elif match.group(3):
                 stack.pop()
-
     return stack[0]
