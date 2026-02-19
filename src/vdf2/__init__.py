@@ -32,3 +32,28 @@ def _parse(text):
             elif match.group(3):
                 stack.pop()
     return stack[0]
+
+loads = _parse
+
+def load(fp: "SupportsRead"):
+    return _parse(fp.read())
+
+def _unparse(data, indent=0):
+    vdf_lines = []
+    indent_str = '\t' * indent  # отступы табуляцией
+
+    for key, value in data.items():
+        if isinstance(value, dict):
+            vdf_lines.append(f'{indent_str}"{key}"')
+            vdf_lines.append(f'{indent_str}' + '{')
+            vdf_lines.extend(_unparse(value, indent + 1))
+            vdf_lines.append(f'{indent_str}' + '}')
+        else:
+            vdf_lines.append(f'{indent_str}"{key}" "{value}"')
+    
+    return vdf_lines
+
+dumps = _unparse
+
+def dump(data: dict, fp: "SupportsWrite"):
+    fp.write(_unparse(data))
