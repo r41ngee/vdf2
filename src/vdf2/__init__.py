@@ -16,7 +16,7 @@ def _parse(text):
                 break
             pos = match.end()
 
-            if match.group(1):
+            if match.group(1) is not None:
                 value = match.group(1).replace(r'\"', '"')
                 if key is None:
                     key = value
@@ -31,6 +31,7 @@ def _parse(text):
                 stack.append(new_dict)
             elif match.group(3):
                 stack.pop()
+
     return stack[0]
 
 loads = _parse
