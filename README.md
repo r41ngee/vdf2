@@ -8,5 +8,5 @@
 `vdf2.dumps(dictionary) # -> vdf string`
 
 ### With IOStreams
-`vdf2.loads(file) # -> dict object`
-`vdf2.dumps("vdf contents", file) # -> saves vdf into file`
+`vdf2.load(file) # -> dict object`
+`vdf2.dump("vdf contents", file) # -> saves vdf into file`
